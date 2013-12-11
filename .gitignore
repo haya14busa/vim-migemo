@@ -1,0 +1,4 @@
+doc/tags
+*.swp
+.DS_Store
+ignore/
