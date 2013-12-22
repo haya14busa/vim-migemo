@@ -16,6 +16,8 @@ endif
 let s:save_cpo = &cpo
 set cpo&vim
 
+let g:migemodict = get(g:, 'migemodict', '')
+
 if has('migemo')
   nnoremap <silent> <Plug>(migemo-searchchar) :call migemo#SearchChar(0)<CR>
   if !hasmapto('<Plug>(migemo-searchchar)') && empty(maparg('<Leader>f', 'n'))

@@ -81,7 +81,10 @@ if has('migemo')
   endfunction
 else
   " non-builtin version
-  let g:migemodict = s:SearchDict()
+  if g:migemodict ==# ''
+    let g:migemodict = s:SearchDict()
+  endif
+
   function! migemo#MigemoSearch(word)
     if executable('cmigemo') == ''
       echohl ErrorMsg
@@ -101,7 +104,7 @@ else
 
     let @/ = retval
     let v:errmsg = ''
-    silent! normal n
+    silent! normal! n
     if v:errmsg != ''
       echohl ErrorMsg
       echo v:errmsg
