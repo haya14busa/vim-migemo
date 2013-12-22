@@ -10,6 +10,23 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:has_vimproc()
+    if !exists('s:exists_vimproc')
+        try
+            silent call vimproc#version()
+            let s:exists_vimproc = 1
+        catch
+            let s:exists_vimproc = 0
+        endtry
+    endif
+
+    return s:exists_vimproc
+endfunction
+
+function! migemo#system(...)
+    return call(s:has_vimproc() ? 'vimproc#system' : 'system', a:000)
+endfunction
+
 function! s:SearchDict2(name)
   let path = $VIM . ',' . &runtimepath
   let dict = globpath(path, "dict/".a:name)
@@ -76,7 +93,7 @@ else
     if retval == ''
       return
     endif
-    let retval = system('cmigemo -v -w "'.retval.'" -d "'.g:migemodict.'"')
+    let retval =  migemo#system('cmigemo -v -w "'.retval.'" -d "'.g:migemodict.'"')
     if retval == ''
       return
     endif
