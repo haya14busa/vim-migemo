@@ -53,17 +53,18 @@ function! s:SearchDict2(name)
 endfunction
 
 function! s:SearchDict()
-  let dict = ''
-  if dict == ''
-    let dict = s:SearchDict2('migemo/'.&encoding.'/migemo-dict')
-  endif
-  if dict == ''
-    let dict = s:SearchDict2(&encoding.'/migemo-dict')
-  endif
-  if dict == ''
-    let dict = s:SearchDict2('migemo-dict')
-  endif
-  return dict
+  for path in [
+        \ 'migemo/'.&encoding.'/migemo-dict',
+        \ &encoding.'/migemo-dict',
+        \ 'migemo-dict',
+        \ ]
+    let dict = s:SearchDict2(path)
+    if dict != ''
+      return dict
+    endif
+  endfor
+  echoerr 'a dictionary for migemo is not found'
+  echoerr 'your encoding is '.&encoding
 endfunction
 
 if has('migemo')
