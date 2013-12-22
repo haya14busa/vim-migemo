@@ -17,10 +17,16 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if has('migemo')
-  nnoremap <Leader>f :call migemo#SearchChar(0)<CR>
+  nnoremap <silent> <Plug>(migemo-searchchar) :call migemo#SearchChar(0)<CR>
+  if !hasmapto('<Plug>(migemo-searchchar)') && empty(maparg('<Leader>f', 'n'))
+    nmap <silent> <Leader>f <Plug>(migemo-searchchar)
+  endif
 else
   command! -nargs=* Migemo call migemo#MigemoSearch(<q-args>)
-  nnoremap <silent> <leader>mi :call migemo#MigemoSearch('')<cr>
+  nnoremap <silent> <Plug>(migemo-migemosearch) :call migemo#MigemoSearch('')<CR>
+  if !hasmapto('<Plug>(migemo-migemosearch)') && empty(maparg('<Leader>mi', 'n'))
+    nmap <silent> <Leader>mi <Plug>(migemo-migemosearch)
+  endif
 endi
 
 let &cpo = s:save_cpo
