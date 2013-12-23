@@ -3,10 +3,11 @@
 " migemo.vim
 "   Direct search for Japanese with Romaji --- Migemo support script.
 "
-" Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
-" Modified:    Yasuhiro Matsumoto <mattn_jp@hotmail.com>
-" Last Change: 22 Dec 2013.
-"
+" Maintainer:   haya14busa <hayabusa1419@gmail.com>
+" Original:     MURAOKA Taro <koron.kaoriya@gmail.com>
+" Contributors: Yasuhiro Matsumoto <mattn_jp@hotmail.com>
+" Last Change: 23 Dec 2013.
+
 let s:save_cpo = &cpo
 set cpo&vim
 
