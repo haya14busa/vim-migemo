@@ -11,16 +11,16 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:has_vimproc()
-    if !exists('s:exists_vimproc')
-        try
-            silent call vimproc#version()
-            let s:exists_vimproc = 1
-        catch
-            let s:exists_vimproc = 0
-        endtry
-    endif
+  if !exists('s:exists_vimproc')
+    try
+      silent call vimproc#version()
+      let s:exists_vimproc = 1
+    catch
+      let s:exists_vimproc = 0
+    endtry
+  endif
 
-    return s:exists_vimproc
+  return s:exists_vimproc
 endfunction
 
 function! migemo#system(...)
