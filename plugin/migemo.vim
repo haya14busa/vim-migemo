@@ -3,9 +3,10 @@
 " migemo.vim
 "   Direct search for Japanese with Romaji --- Migemo support script.
 "
-" Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
-" Modified:    Yasuhiro Matsumoto <mattn_jp@hotmail.com>
-" Last Change: 15-Dec-2013.
+" Maintainer:   haya14busa <hayabusa1419@gmail.com>
+" Original:     MURAOKA Taro <koron.kaoriya@gmail.com>
+" Contributors: Yasuhiro Matsumoto <mattn_jp@hotmail.com>
+" Last Change: 23 Dec 2013.
 
 " Japanese Description:
 
@@ -16,91 +17,20 @@ endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:SearchDict2(name)
-  let path = $VIM . ',' . &runtimepath
-  let dict = globpath(path, "dict/".a:name)
-  if dict == ''
-    let dict = globpath(path, a:name)
-  endif
-  if dict == ''
-    for path in [
-          \ '/usr/local/share/migemo/',
-          \ '/usr/local/share/cmigemo/',
-          \ '/usr/local/share/',
-          \ '/usr/share/cmigemo/',
-          \ '/usr/share/',
-          \ ]
-      let path = path . a:name
-      if filereadable(path)
-        let dict = path
-        break
-      endif
-    endfor
-  endif
-  let dict = matchstr(dict, "^[^\<NL>]*")
-  return dict
-endfunction
-
-function! s:SearchDict()
-  let dict = ''
-  if dict == ''
-    let dict = s:SearchDict2('migemo/'.&encoding.'/migemo-dict')
-  endif
-  if dict == ''
-    let dict = s:SearchDict2(&encoding.'/migemo-dict')
-  endif
-  if dict == ''
-    let dict = s:SearchDict2('migemo-dict')
-  endif
-  return dict
-endfunction
+let g:migemodict = get(g:, 'migemodict', '')
 
 if has('migemo')
-  if &migemodict == '' || !filereadable(&migemodict)
-    let &migemodict = s:SearchDict()
+  nnoremap <silent> <Plug>(migemo-searchchar) :call migemo#SearchChar(0)<CR>
+  if !hasmapto('<Plug>(migemo-searchchar)') && empty(maparg('<Leader>f', 'n'))
+    nmap <silent> <Leader>f <Plug>(migemo-searchchar)
   endif
-
-  " ƒeƒXƒg
-  function! s:SearchChar(dir)
-    let input = nr2char(getchar())
-    let pat = migemo(input)
-    call search('\%(\%#.\{-\}\)\@<='.pat)
-    noh
-  endfunction
-  nnoremap <Leader>f :call <SID>SearchChar(0)<CR>
 else
-  " non-builtin version
-  let g:migemodict = s:SearchDict()
-  command! -nargs=* Migemo :call <SID>MigemoSearch(<q-args>)
-  nnoremap <silent> <leader>mi :call <SID>MigemoSearch('')<cr>
-
-  function! s:MigemoSearch(word)
-    if executable('cmigemo') == ''
-      echohl ErrorMsg
-      echo 'Error: cmigemo is not installed'
-      echohl None
-      return
-    endif
-  
-    let retval = a:word != '' ? a:word : input('MIGEMO:')
-    if retval == ''
-      return
-    endif
-    let retval = system('cmigemo -v -w "'.retval.'" -d "'.g:migemodict.'"')
-    if retval == ''
-      return
-    endif
-  
-    let @/ = retval
-    let v:errmsg = ''
-    silent! normal n
-    if v:errmsg != ''
-      echohl ErrorMsg
-      echo v:errmsg
-      echohl None
-    endif
-  endfunction
-endif
+  command! -nargs=* Migemo call migemo#MigemoSearch(<q-args>)
+  nnoremap <silent> <Plug>(migemo-migemosearch) :call migemo#MigemoSearch('')<CR>
+  if !hasmapto('<Plug>(migemo-migemosearch)') && empty(maparg('<Leader>mi', 'n'))
+    nmap <silent> <Leader>mi <Plug>(migemo-migemosearch)
+  endif
+endi
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
